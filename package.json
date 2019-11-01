@@ -1,0 +1,21 @@
+{
+  "name": "labyrinth-escape",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "dependencies": {
+    "bootstrap": "^4.3.1",
+    "express": "^4.17.1",
+    "jquery": "^3.4.1",
+    "svg.js": "^2.7.1",
+    "watchify": "^3.11.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "watch": "watchify public/index.js -o public/bundle.js -v",
+    "build": "browserify public/index.js -o public/bundle.js",
+    "start": "npm run watch & nodemon server.js"
+  },
+  "author": "",
+  "license": "ISC"
+}
