@@ -13,8 +13,8 @@
   },
   "devDependencies": {},
   "scripts": {
-    "watch": "watchify public/index.js -o public/bundle.js -v",
-    "build": "browserify public/index.js -o public/bundle.js",
+    "watch": "watchify docs/index.js -o docs/bundle.js -v",
+    "build": "browserify docs/index.js -o docs/bundle.js",
     "start": "npm run watch & nodemon server.js"
   },
   "author": "",
