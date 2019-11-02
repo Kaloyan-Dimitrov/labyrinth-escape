@@ -27,15 +27,19 @@
             <label class="btn btn-light active">
                 <input type="radio" name="options" id="wall" autocomplete="off" checked> Wall
             </label>
-            <label class="btn btn-light">
-                <input type="radio" name="options" id="start" autocomplete="off"> Start
+            <label class="offLabel btn btn-light">
+                <input class="off" type="radio" name="options" id="start" autocomplete="off"> Start
             </label>
-            <label class="btn btn-light">
-                <input type="radio" name="options" id="end" autocomplete="off"> End
+            <label class="offLabel btn btn-light">
+                <input class="off" type="radio" name="options" id="end" autocomplete="off"> End
+            </label>
+            <label class="offLabel btn btn-light">
+                <input class="off" type="radio" name="options" id="empty" autocomplete="off"> Empty cell
             </label>
         </div>
-        <button class="btn btn-danger" id="clear">Clear everything!</button>
+        <button class="off btn btn-danger" id="clear">Clear everything!</button>
         <button class="btn btn-success" id="solve">Solve!</button>
+        <button class="off btn btn-warning" id="stop" style="display: none;">Clear route!</button>
     </div>
     <div id="drawing"></div>
     <div class="assets" id="start">
