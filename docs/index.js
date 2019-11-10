@@ -141,17 +141,32 @@ $(() => {
         $('#solve').css('display', 'none');
         $('#stop').css('display', 'inline-block');
     };
+    const enableButtons = () => {
+        $('.offLabel').removeClass('disabled');
+        $('.off').prop('disabled', false);
+        $('#solve').css('display', 'inline-block');
+        $('#stop').css('display', 'none');
+    };
     const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
     // !SECTION
 
 
     // SECTION Main Actions
+    const fillGrid = () => {
+        grid.forEach((row, i) => {
+            row.forEach((cell, j) => {
+                if (!isCollidingStart(i, j) && !isCollidingEnd(i, j) && !isWall(cell)) {
+                    cell.fill('#000000')
+                }
+            });
+        });
+    }
     const clearGrid = () => {
-        grid.forEach(row => {
-            row.forEach(cell => {
-                cell.fill('#ffffff');
-                cell.visited = false;
-                cell.parent = null;
+        grid.forEach((row, i) => {
+            row.forEach((cell, j) => {
+                if (!isCollidingStart(i, j) && !isCollidingEnd(i, j) && !isEmpty(cell)) {
+                    cell.fill('#ffffff')
+                }
             });
         });
     };
@@ -164,10 +179,7 @@ $(() => {
                 cell.parent = null;
             });
         });
-        $('.offLabel').removeClass('disabled');
-        $('.off').prop('disabled', false);
-        $('#solve').css('display', 'inline-block');
-        $('#stop').css('display', 'none');
+        enableButtons();
     };
     const solveMaze = async () => {
         disableButtons();
@@ -268,6 +280,7 @@ $(() => {
     drawEndSymbol(end);
 
     let foundRoute = false;
+    $('#fill').click(fillGrid);
     $('#clear').click(clearGrid);
     $('#stop').click(clearRoute);
     $('#solve').click(solveMaze);
