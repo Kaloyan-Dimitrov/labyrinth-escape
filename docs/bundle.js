@@ -4,11 +4,19 @@ const $ = require('jquery');
 const bootstrap = require('bootstrap');
 
 $(() => {
-    // Initializing all buttons as bootstrap extra buttons
+    //
+    // ─── INITIALIZING ALL BUTTONS AS BOOTSTRAP EXTRA BUTTONS ─────────────────────────
+    //
+
+
     $('.btn').button();
 
 
-    // A variable and methods to be able to always check if mouse is clicked
+    //
+    // ─── A VARIABLE AND METHODS TO BE ABLE TO ALWAYS CHECK IF MOUSE IS CLICKED ──────
+    //
+
+
     let mouseDown = 0;
     document.body.onmousedown = function () {
         ++mouseDown;
@@ -16,6 +24,12 @@ $(() => {
     document.body.onmouseup = function () {
         --mouseDown;
     }
+
+
+
+    //
+    // ─── INITIALIZING BASIC VARIABLES ───────────────────────────────────────────────
+    //
 
 
     const cellWidth = 20;
@@ -31,7 +45,12 @@ $(() => {
     const visitedColor = '#36cae0';
 
 
-    // SECTION Drawing new things Helpers
+
+    //
+    // ─── DRAWING NEW THINGS HELPERS ─────────────────────────────────────────────────
+    //
+
+
     const drawCell = (canvas, i, j, fillColor, strokeColor) => {
         fillColor = fillColor ? fillColor : '#fff';
         strokeColor = strokeColor ? strokeColor : '#000';
@@ -67,19 +86,27 @@ $(() => {
         }
         current.animate(1000, 0, 'last').fill('#fff654');
     }
-    // !SECTION
 
 
-    // SECTION Boolean Helpers
-    const isEmpty = (cell) => $(cell.node).attr('fill') == '#ffffff';
-    const isWall = (cell) => $(cell.node).attr('fill') == '#000000';
-    const isCollidingStart = (x, y) => x == startX && y == startY;
-    const isCollidingEnd = (x, y) => x == endX && y == endY;
+
+    //
+    // ─── BOOLEAN HELPERS ────────────────────────────────────────────────────────────
+    //
+
+
+    const isEmpty = (cell) => $(cell.node).attr('fill') === '#ffffff';
+    const isWall = (cell) => $(cell.node).attr('fill') === '#000000';
+    const isCollidingStart = (x, y) => x === startX && y === startY;
+    const isCollidingEnd = (x, y) => x === endX && y === endY;
     const isWithinBounds = (x, y) => x < 0 || x > gridRows || y < 0 || y > gridColumns;
-    // !SECTION 
 
 
-    // SECTION Animation Helpers
+
+    //
+    // ─── ANIMATION HELPERS ──────────────────────────────────────────────────────────
+    //
+
+
     const animateFillWithColor = (cell, color) => {
         cell.animate({
             duration: 100
@@ -128,14 +155,18 @@ $(() => {
     };
     const animateOnPlacingSmth = (currentSelected, thisCell) => {
         let newToAnimate;
-        if (isEmpty(grid[thisCell.i][thisCell.j]) && currentSelected == 'wall') newToAnimate = animateWall(thisCell.i, thisCell.j, thisCell);
-        if (isWall(grid[thisCell.i][thisCell.j]) && currentSelected == 'empty') newToAnimate = animateEmpty(thisCell.i, thisCell.j, thisCell);
+        if (isEmpty(grid[thisCell.i][thisCell.j]) && currentSelected === 'wall') newToAnimate = animateWall(thisCell.i, thisCell.j, thisCell);
+        if (isWall(grid[thisCell.i][thisCell.j]) && currentSelected === 'empty') newToAnimate = animateEmpty(thisCell.i, thisCell.j, thisCell);
         if (newToAnimate) zoomAndRemove(newToAnimate);
     };
-    // !SECTION
 
 
-    // SECTION Other Helpers
+
+    //
+    // ─── OTHER HELPERS ──────────────────────────────────────────────────────────────
+    //
+
+
     const disableButtons = () => {
         $('.offLabel').addClass('disabled');
         $('.off').attr('disabled', 'true');
@@ -149,10 +180,14 @@ $(() => {
         $('#stop').css('display', 'none');
     };
     const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
-    // !SECTION
 
 
-    // SECTION Main Actions
+
+    //
+    // ─── MAIN ACTIONS ───────────────────────────────────────────────────────────────
+    //
+
+
     const fillGrid = () => {
         grid.forEach((row, i) => {
             row.forEach((cell, j) => {
@@ -241,23 +276,25 @@ $(() => {
             }
         }
     }
-    // !SECTION 
 
 
-    // SECTION Cell Actions
+
+    //
+    // ─── CELL ACTIONS ───────────────────────────────────────────────────────────────
+    //
+
+
     const cellClick = function () {
         // Getting the current selected thing
         let currentSelected = $('#placing').children('.active').children()[0].id;
 
-        if (!isCollidingStart(this.i, this.j) && !isCollidingEnd(this.i, this.j)) {
-            animateOnPlacingSmth(currentSelected, this);
-        }
-        if (currentSelected == 'start') {
+        if (!isCollidingStart(this.i, this.j) && !isCollidingEnd(this.i, this.j)) animateOnPlacingSmth(currentSelected, this);
+        if (currentSelected === 'start') {
             start.move(this.x(), this.y());
             startX = this.i;
             startY = this.j;
         }
-        if (currentSelected == 'end') {
+        if (currentSelected === 'end') {
             end.move(this.x(), this.y());
             endX = this.i;
             endY = this.j;
@@ -266,19 +303,35 @@ $(() => {
     const cellMouseOver = function () {
         // Getting the current selected thing
         let currentSelected = $('#placing').children('.active').children()[0].id;
-        if (!isCollidingStart(this.i, this.j) && !isCollidingEnd(this.i, this.j) && mouseDown) {
-            animateOnPlacingSmth(currentSelected, this);
-        }
-
+        if (!isCollidingStart(this.i, this.j) && !isCollidingEnd(this.i, this.j) && mouseDown) animateOnPlacingSmth(currentSelected, this);
     };
-    // !SECTION
+
+
+    //
+    // ─── ACTUALLY CALL THE METHOD INITIALIZING THE GRID ─────────────────────────────
+    //
+
 
     initGrid();
+
+
+
+    //
+    // ─── INITIALIZING AND DRAWING THE START AND END SYMBOLS ─────────────────────────
+    //
+
 
     const start = drawingCanvas.group();
     drawStartSymbol(start);
     const end = drawingCanvas.group();
     drawEndSymbol(end);
+
+
+
+    //
+    // ─── MAIN ACTIONS ATTACHED TO THE BUTTONS ───────────────────────────────────────
+    //
+
 
     let foundRoute = false;
     $('#fill').click(fillGrid);
