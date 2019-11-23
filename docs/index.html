@@ -2,21 +2,22 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous" />
   <title>Login form</title>
+  <script src="./login.js"></script>
   <style>
     :root {
       --input-padding-x: 1.5rem;
-      --input-padding-y: .75rem;
+      --input-padding-y: 0.75rem;
     }
 
     body {
       background: #007bff;
-      background: linear-gradient(to right, #0062E6, #33AEFF);
+      background: linear-gradient(to right, #0062e6, #33aeff);
     }
 
     .card-signin {
@@ -29,7 +30,6 @@
       margin-bottom: 2rem;
       font-weight: 300;
       font-size: 1.5rem;
-
     }
 
     .page-title {
@@ -48,7 +48,7 @@
     .form-signin .btn {
       font-size: 80%;
       /* border-radius: 5rem; */
-      letter-spacing: .1rem;
+      letter-spacing: 0.1rem;
       font-weight: bold;
       padding: 1rem;
       transition: all 0.2s;
@@ -80,8 +80,8 @@
       line-height: 1.5;
       color: #495057;
       border: 1px solid transparent;
-      border-radius: .25rem;
-      transition: all .1s ease-in-out;
+      border-radius: 0.25rem;
+      transition: all 0.1s ease-in-out;
     }
 
     .form-label-group input::-webkit-input-placeholder {
@@ -128,17 +128,21 @@
             <h5 class="card-title text-center">Sign In</h5>
             <form class="form-signin">
               <div class="form-group">
-                <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
+                <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required
+                  autofocus />
               </div>
               <div class="form-group">
-                <input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
+                <input type="password" id="inputPassword" class="form-control" placeholder="Password" required />
               </div>
 
               <div class="custom-control custom-checkbox mb-3">
-                <input type="checkbox" class="custom-control-input" id="customCheck1">
+                <input type="checkbox" class="custom-control-input" id="customCheck1" />
                 <label class="custom-control-label" for="customCheck1">Remember password</label>
               </div>
-              <button class="btn btn-lg btn-primary btn-block text-uppercase" type="submit">Sign in</button>
+              <button class="btn btn-lg btn-primary btn-block text-uppercase" type="submit">
+                <span class="signin-spinner spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                <span class="signin-text">Sign in</span>
+              </button>
               <div class="mt-3">
                 Don't have an account? <a href="signup.html">Sign up.</a>
               </div>
@@ -148,6 +152,8 @@
       </div>
     </div>
   </div>
+  <script src="./bundles/login.js"></script>
+
 </body>
 
 </html>
