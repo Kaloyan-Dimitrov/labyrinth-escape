@@ -1,49 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <title>Labyrinth</title>
-    <style>
-        #header {
-            text-align: center;
-            padding-bottom: 10px;
-        }
-
-        .assets {
-            display: none;
-        }
-    </style>
+    <title>Login form</title>
 </head>
-
 <body>
-    <div id="header">
-        <h1>Labyrinth solver!</h1>
-        Placing: <div class="btn-group btn-group-toggle" data-toggle="buttons" id="placing">
-            <label class="btn btn-light active">
-                <input type="radio" name="options" id="wall" autocomplete="off" checked> Wall
-            </label>
-            <label class="offLabel btn btn-light">
-                <input class="off" type="radio" name="options" id="start" autocomplete="off"> Start
-            </label>
-            <label class="offLabel btn btn-light">
-                <input class="off" type="radio" name="options" id="end" autocomplete="off"> End
-            </label>
-            <label class="offLabel btn btn-light">
-                <input class="off" type="radio" name="options" id="empty" autocomplete="off"> Empty cell
-            </label>
+    <form>
+        <div class="form-group">
+          <label for="exampleInputEmail1">Email address</label>
+          <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
+          <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
         </div>
-        <button class="off btn btn-dark" id="fill">Fill in everything!</button>
-        <button class="off btn btn-danger" id="clear">Clear everything!</button>
-        <button class="btn btn-success" id="solve">Solve!</button>
-        <button class="off btn btn-warning" id="stop" style="display: none;">Clear route!</button>
-    </div>
-    <div id="drawing"></div>
-    <script src="bundle.js"></script>
+        <div class="form-group">
+          <label for="exampleInputPassword1">Password</label>
+          <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </form>
 </body>
-
 </html>
