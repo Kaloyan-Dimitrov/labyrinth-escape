@@ -15,6 +15,7 @@ const firebaseConfig = {
 const app = firebase.initializeApp(firebaseConfig);
 
 const successfullyRegistered = () => {
+    console.log('success')
     turnSpinnerOff();
     $('.alert-success').removeClass('d-none');
 };
@@ -41,7 +42,7 @@ const passwordsDontMatch = () => {
     $('#inputRepeatPassword').addClass('is-invalid');
     $('#tooltipRepeatPassword').html('Passwords don\'t match.');
 };
-$('form').submit(function (event) {
+$('form').submit(async function (event) {
     event.preventDefault();
     const email = $('#inputEmail').val();
     const password = $('#inputPassword').val();
@@ -50,11 +51,13 @@ $('form').submit(function (event) {
         passwordsDontMatch();
         return;
     }
-    turnSpinnerOn();
-    console.log('Submitted')
-    firebase.auth().createUserWithEmailAndPassword(email, password).catch(unsuccessfullyRegistered).then({
-        onfullfilled: successfullyRegistered
-    });
+    turnSpinnerOn();    
+    try {
+        let reponse = await firebase.auth(app).createUserWithEmailAndPassword(email, password);
+        successfullyRegistered();
+    } catch (err) {
+        unsuccessfullyRegistered(err);
+    }
 });
 
 $('input').change(function (event) {
