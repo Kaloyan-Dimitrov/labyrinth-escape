@@ -1,5 +1,20 @@
 const firebase = require('firebase');
 const $ = require("jquery");
+
+//
+// ─── CHECK IF THE USER IS ALREADY LOGGED IN ─────────────────────────────────────
+//
+
+const uid = localStorage.getItem('uid');
+if (uid) {
+    window.location.href = "./main.html";
+}
+
+
+//
+// ─── INITIALIZING FIREBASE ──────────────────────────────────────────────────────
+//
+
 const firebaseConfig = {
     apiKey: "AIzaSyALmxph1nPf5oamgJSLRl6-3AsK0QiX318",
     authDomain: "labirynth-solver.firebaseapp.com",
@@ -10,15 +25,21 @@ const firebaseConfig = {
     appId: "1:222488162206:web:2fba50f01d3b6ff295b08f",
     measurementId: "G-QKH037DXDT"
 };
-// Initialize Firebase
 const app = firebase.initializeApp(firebaseConfig);
 
-const successfullyRegistered = () => {
-    console.log('success')
+//
+// ─── LOGIN CALLBACKS ────────────────────────────────────────────────────────────
+//
+
+
+const successfullyLoggedIn = (res) => {
+    console.log('success', res)
     turnSpinnerOff();
-    $('.alert-success').removeClass('d-none');
+    localStorage.setItem('uid', res);
+    localStorage.setItem('loggedin', (new Date()).toString());
+    window.location.href = "./main.html";
 };
-const unsuccessfullyRegistered = (error) => {
+const unsuccessfullyLoggedIn = (error) => {
     console.error(error);
     turnSpinnerOff();
     if (error.code == 'auth/invalid-email') {
@@ -29,28 +50,31 @@ const unsuccessfullyRegistered = (error) => {
         $('.alert-danger').html(error.message);
     }
 };
+
+//
+// ─── SPINNER HELPERS ────────────────────────────────────────────────────────────
+//
+
+
 const turnSpinnerOn = () => {
     $('.signin-spinner').removeClass('d-none');
     $('.signin-text').addClass('d-none');
 };
 const turnSpinnerOff = () => {
-    $('.signup-spinner').addClass('d-none');
-    $('.signup-text').removeClass('d-none');
+    $('.signin-spinner').addClass('d-none');
+    $('.signin-text').removeClass('d-none');
 };
-const passwordsDontMatch = () => {
-    $('#inputRepeatPassword').addClass('is-invalid');
-    $('#tooltipRepeatPassword').html('Passwords don\'t match.');
-};
+
 $('form').submit(async function (event) {
     event.preventDefault();
     const email = $('#inputEmail').val();
     const password = $('#inputPassword').val();
     turnSpinnerOn();    
     try {
-        let reponse = await firebase.auth(app).createUserWithEmailAndPassword(email, password);
-        successfullyRegistered();
+        await firebase.auth(app).signInWithEmailAndPassword(email, password);
+        successfullyLoggedIn(firebase.auth().currentUser.uid);
     } catch (err) {
-        unsuccessfullyRegistered(err);
+        unsuccessfullyLoggedIn(err);
     }
 });
 

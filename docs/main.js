@@ -5,39 +5,94 @@ const firebase = require("firebase");
 
 $(() => {
   //
+  // ─── CHECK IF THE USER IS LOGGED IN ─────────────────────────────────────────────
+  //
+
+  const uid = localStorage.getItem('uid');
+  if (!uid) {
+    window.location.href = "./index.html";
+  }
+
+  //
+  // ─── INITIALIZE FIREBASE ────────────────────────────────────────────────────────
+  //
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyALmxph1nPf5oamgJSLRl6-3AsK0QiX318",
+    authDomain: "labirynth-solver.firebaseapp.com",
+    databaseURL: "https://labirynth-solver.firebaseio.com",
+    projectId: "labirynth-solver",
+    storageBucket: "labirynth-solver.appspot.com",
+    messagingSenderId: "222488162206",
+    appId: "1:222488162206:web:2fba50f01d3b6ff295b08f",
+    measurementId: "G-QKH037DXDT"
+  };
+  const app = firebase.initializeApp(firebaseConfig);
+
+  //
+  // ─── RETRIEVE ALL THE MAZES FROM THE DATABASE ───────────────────────────────────
+  //
+
+  let mazes = [];
+  let loadedMazes = false;
+  firebase.firestore().collection(uid).get().then(res => {
+    if(res.docs.length == 0) {
+      $('.load-spinner').addClass('d-none');
+      $('#load > i').removeClass('d-none');
+      loadedMazes = true;
+    }
+    res.docs.forEach(d => {
+      d.ref.get().then(val => {
+        val.ref.get().then(value => {
+          mazes.push(value.data());
+          if(mazes.length == res.size) {
+            $('#load').prop('disabled', false);
+            $('.load-spinner').addClass('d-none');
+            $('#load > i').removeClass('d-none');
+            loadedMazes = true;
+            listMazesInModal();
+            console.log(mazes)
+          }
+        })
+      });
+    })
+    
+  });
+
+  //
   // ─── INITIALIZING ALL BUTTONS AS BOOTSTRAP EXTRA BUTTONS ─────────────────────────
   //
 
   $(".btn").button();
+  $('[data-toggle="tooltip"]').tooltip()
 
   //
   // ─── A VARIABLE AND METHODS TO BE ABLE TO ALWAYS CHECK IF MOUSE IS CLICKED ──────
   //
 
   let mouseDown = 0;
-  document.body.onmousedown = function() {
-    ++mouseDown;
+  document.body.onmousedown = function () {
+    mouseDown = true;
   };
-  document.body.onmouseup = function() {
-    --mouseDown;
+  document.body.onmouseup = function () {
+    mouseDown = false;
   };
 
   //
   // ─── INITIALIZING BASIC VARIABLES ───────────────────────────────────────────────
   //
-
   const cellWidth = 20;
   const cellHeight = 20;
-  const gridRows = window.innerWidth / cellWidth;
-  const gridColumns = (window.innerHeight * 0.85) / cellHeight;
-  const canvasWidth = window.innerWidth;
-  const canvasHeight = window.innerHeight * 0.85;
-  const drawingCanvas = SVG("drawing").size(canvasWidth, canvasHeight + 4);
+  const canvasWidth = Math.floor($('#drawing').width());
+  const canvasHeight = Math.floor($('#drawing').height()) - cellHeight;
+  const gridRows = Math.floor(canvasWidth / cellWidth);
+  const gridColumns = Math.floor(canvasHeight / cellHeight);
+  const drawingCanvas = SVG("drawing").size(gridRows * cellWidth, gridColumns * cellHeight);
+  $(drawingCanvas.node).addClass('shadow');
   let startX, startY, endX, endY;
   let grid = [];
   const currentCheckedColor = "#d051e0";
   const visitedColor = "#36cae0";
-
   //
   // ─── DRAWING NEW THINGS HELPERS ─────────────────────────────────────────────────
   //
@@ -101,7 +156,7 @@ $(() => {
   const isCollidingStart = (x, y) => x === startX && y === startY;
   const isCollidingEnd = (x, y) => x === endX && y === endY;
   const isWithinBounds = (x, y) =>
-    x < 0 || x > gridRows || y < 0 || y > gridColumns;
+    !(x < 0 || x >= gridRows || y < 0 || y >= gridColumns);
 
   //
   // ─── ANIMATION HELPERS ──────────────────────────────────────────────────────────
@@ -187,11 +242,37 @@ $(() => {
     $("#stop").css("display", "none");
   };
   const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+  const emptyName = () => {
+    $('#maze-name').addClass('is-invalid');
+    $('#tooltipName').html('Name should not be empty');
+  };
+  const removeErrors = () => {
+    $('#maze-name').removeClass('is-invalid');
+    $('#tooltipName').html('');
+  };
+  const listMazesInModal = () => {
+    mazes.forEach(m => {
+      $('.modal-body > .btn-group-vertical').append(`<button data-dismiss="modal" type="button" id="${m.name}" class="btn btn-outline-primary" ${gridRows < m.gridRows || gridColumns < m.gridColumns ? 'disabled data-toggle="tooltip" data-placement="right" title="This maze is too large"' : ''} >${m.name}</button>`)
+    });
+    $('.btn-group-vertical > .btn-outline-primary').click(loadMaze);
+  };
 
   //
   // ─── MAIN ACTIONS ───────────────────────────────────────────────────────────────
   //
-
+  const extractMaze = () => {
+    const result = [];
+    for(let i = 0; i < gridRows; i ++) {
+      result[i] = [];
+      for(let j = 0; j < gridColumns; j ++) {
+        const current = grid[i][j];
+        result[i][j] = isWall(current) ? 'w' : '_';
+        if(isCollidingStart(i, j)) result[i][j] = 's';
+        if(isCollidingEnd(i, j)) result[i][j] = 'e';
+      }
+    }
+    return result;
+  }
   const fillGrid = () => {
     grid.forEach((row, i) => {
       row.forEach((cell, j) => {
@@ -245,11 +326,11 @@ $(() => {
         };
         // Check if it has found the target
         if (isCollidingEnd(current.x, current.y)) foundRoute = true;
+        // Skip if out of bounds
+        if (!isWithinBounds(current.x, current.y))
+          continue;
         // Skip if wall
-        if (
-          isWithinBounds(current.x, current.y) ||
-          isWall(grid[current.x][current.y])
-        )
+        if (isWall(grid[current.x][current.y]))
           continue;
         // Skip if visited
         if (grid[current.x][current.y].visited) continue;
@@ -280,6 +361,34 @@ $(() => {
       alert("I wasn't able to find a route from the start to the end");
     $("#stop").prop("disabled", false);
   };
+  const saveMaze = async () => {
+    const name = $('#maze-name').val();
+    if(name == '') {
+      emptyName();
+      return;
+    }
+    let maze = {
+      content: extractMaze()
+    };
+    maze = JSON.stringify(maze);
+    if(loadedMazes) {
+      if(mazes.find(m => m.maze == maze) != undefined) return;
+    }
+    console.log({
+      name,
+      maze
+    })
+    mazes.push({
+      name,
+      maze
+    })
+    firebase.firestore(app).collection(uid).add({
+      name,
+      maze,
+      gridRows,
+      gridColumns
+    });
+  }
   const initGrid = () => {
     for (let i = 0; i < gridRows; i++) {
       grid[i] = [];
@@ -292,12 +401,39 @@ $(() => {
       }
     }
   };
+  const loadMaze = (event) => {
+    const whichMaze = mazes.find(m => m.name == event.target.id);
+    applyMaze(whichMaze);
+  };
+  const applyMaze = (maze) => {
+    const content = JSON.parse(maze.maze).content;
+    if(gridRows < maze.gridRows || gridColumns < maze.gridColumns) {
+      alert('Your current grid is too small');
+      return;
+    }
+    content.forEach((row, i) => {
+      row.forEach((cell, j) => {
+        if(cell == '_') grid[i][j].fill("#ffffff");
+        if(cell == 'w') grid[i][j].fill("#000000");
+        if(cell == 's') {
+          start.move(i * cellWidth, j * cellHeight);
+          startX = i;
+          startY = j;
+        }
+        if(cell == 'e') {
+          end.move(i * cellWidth, j * cellHeight);
+          endX = i;
+          endY = j;
+        }
+      });
+    });
+  };
 
   //
   // ─── CELL ACTIONS ───────────────────────────────────────────────────────────────
   //
 
-  const cellClick = function() {
+  const cellClick = function () {
     // Getting the current selected thing
     let currentSelected = $("#placing")
       .children(".active")
@@ -305,18 +441,18 @@ $(() => {
 
     if (!isCollidingStart(this.i, this.j) && !isCollidingEnd(this.i, this.j))
       animateOnPlacingSmth(currentSelected, this);
-    if (currentSelected === "start") {
+    if (currentSelected === "start" && !isWall(this)) {
       start.move(this.x(), this.y());
       startX = this.i;
       startY = this.j;
     }
-    if (currentSelected === "end") {
+    if (currentSelected === "end" && !isWall(this)) {
       end.move(this.x(), this.y());
       endX = this.i;
       endY = this.j;
     }
   };
-  const cellMouseOver = function() {
+  const cellMouseOver = function () {
     // Getting the current selected thing
     let currentSelected = $("#placing")
       .children(".active")
@@ -345,7 +481,7 @@ $(() => {
   drawEndSymbol(end);
 
   //
-  // ─── MAIN ACTIONS ATTACHED TO THE BUTTONS ───────────────────────────────────────
+  // ─── MAIN EVENT HANDLERS ───────────────────────────────────────
   //
 
   let foundRoute = false;
@@ -353,4 +489,8 @@ $(() => {
   $("#clear").click(clearGrid);
   $("#stop").click(clearRoute);
   $("#solve").click(solveMaze);
+  $('#save').click(saveMaze);
+  $('form').submit(e => e.preventDefault());
+  $('#maze-name').change(removeErrors);
+  $('#load').change(removeErrors);
 });
