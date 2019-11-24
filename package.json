@@ -15,7 +15,7 @@
   "scripts": {
     "watch": "watchify docs/index.js -o docs/bundle.js -v",
     "build": "browserify docs/index.js -o docs/bundle.js",
-    "start": "npm run watch & nodemon server.js"
+    "start": "nodemon server.js"
   },
   "author": "",
   "license": "ISC"
