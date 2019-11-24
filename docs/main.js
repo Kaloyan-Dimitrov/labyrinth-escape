@@ -64,10 +64,10 @@ $(() => {
   //
 
   $(".btn").button();
-  $('[data-toggle="tooltip"]').tooltip()
+  $('[data-toggle="tooltip"]').tooltip();
 
   //
-  // ─── A VARIABLE AND METHODS TO BE ABLE TO ALWAYS CHECK IF MOUSE IS CLICKED ──────
+  // ─── A VARIABLE TO BE ABLE TO ALWAYS CHECK IF MOUSE IS CLICKED ──────
   //
 
   let mouseDown = 0;
@@ -251,8 +251,9 @@ $(() => {
     $('#tooltipName').html('');
   };
   const listMazesInModal = () => {
+    console.log('HERE')
     mazes.forEach(m => {
-      $('.modal-body > .btn-group-vertical').append(`<button data-dismiss="modal" type="button" id="${m.name}" class="btn btn-outline-primary" ${gridRows < m.gridRows || gridColumns < m.gridColumns ? 'disabled data-toggle="tooltip" data-placement="right" title="This maze is too large"' : ''} >${m.name}</button>`)
+      $('.modal-body > .btn-group-vertical').append(`<button data-dismiss="modal" type="button" id="${m.name}" class="btn btn-outline-primary" ${gridRows < m.gridRows || gridColumns < m.gridColumns ? 'disabled data-toggle="tooltip" data-placement="right" title="This maze is too large"' : ''} >${m.name}  -  ${m.gridRows} x ${m.gridColumns}</button>`);
     });
     $('.btn-group-vertical > .btn-outline-primary').click(loadMaze);
   };
