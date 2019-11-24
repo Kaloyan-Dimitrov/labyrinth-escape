@@ -5,15 +5,22 @@
   "main": "server.js",
   "dependencies": {
     "bootstrap": "^4.3.1",
+    "browserify": "^16.5.0",
     "express": "^4.17.1",
+    "firebase": "^7.5.0",
     "jquery": "^3.4.1",
     "popper.js": "^1.16.0",
     "svg.js": "^2.7.1",
     "watchify": "^3.11.1"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "npm-run-all": "^4.1.5"
+  },
   "scripts": {
-    "watch": "watchify docs/index.js -o docs/bundle.js -v",
+    "watch": "npm-run-all --parallel watch:*",
+    "watch:main": "watchify docs/main.js -o docs/bundles/main.js -v",
+    "watch:login": "watchify docs/login.js -o docs/bundles/login.js -v",
+    "watch:register": "watchify docs/register.js -o docs/bundles/register.js -v",
     "build": "browserify docs/index.js -o docs/bundle.js",
     "start": "nodemon server.js"
   },

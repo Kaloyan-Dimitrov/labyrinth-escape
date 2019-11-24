@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <title>Labyrinth</title>
+    <style>
+        html,
+        body {
+            height: 100%;
+        }
+
+        .assets {
+            display: none;
+        }
+    </style>
+</head>
+
+<body class="d-flex flex-column overflow-hidden">
+    <div class="text-center mb-3 pt-3" id="header">
+        <h1 class="mb-3 font-weight-light">Maze solver</h1>
+        <div class="btn-group btn-group-toggle mr-3" data-toggle="buttons" id="placing">
+            <label class="btn btn-info font-weight-light active">
+                <input type="radio" name="options" id="wall" autocomplete="off" checked>
+                <i class="material-icons align-middle">add</i>
+                <div class="d-inline align-middle">Wall</div>
+            </label>
+            <label class="btn btn-info font-weight-light offLabel">
+                <input class="off" type="radio" name="options" id="start" autocomplete="off">
+                <i class="material-icons align-middle">outlined_flag</i>
+                <div class="d-inline align-middle">Start</div>
+            </label>
+            <label class="btn btn-info font-weight-light offLabel">
+                <input class="off" type="radio" name="options" id="end" autocomplete="off">
+                <i class="material-icons align-middle">flag</i>
+                <div class="d-inline align-middle">End</div>
+            </label>
+            <label class="btn btn-info font-weight-light offLabel">
+                <input class="off" type="radio" name="options" id="empty" autocomplete="off">
+                <i class="material-icons align-middle">remove</i>
+                <div class="d-inline align-middle">Empty cell</div>
+            </label>
+        </div>
+        <button class="off btn btn-dark font-weight-light" id="fill">
+            <i class="material-icons align-middle">select_all</i>
+            <div class="d-inline align-middle">Fill</div>
+        </button>
+        <button class="off btn btn-danger font-weight-light" id="clear">
+            <i class="material-icons align-middle">clear</i>
+            <div class="d-inline align-middle">Clear</div>
+        </button>
+        <button class="btn btn-success font-weight-light" id="solve">
+            <i class="material-icons align-middle">check</i>
+            <div class="d-inline align-middle">Solve</div>
+        </button>
+        <button class="off btn btn-warning font-weight-light" id="stop" style="display: none;">
+            <i class="material-icons align-middle mr-1">delete</i>
+            <div class="d-inline align-middle">Clear route</div>
+        </button>
+        <button class="ml-5 btn btn-primary font-weight-light" data-toggle="modal"
+            data-target="#nameModal">
+            <i class="material-icons align-middle mr-1">cloud_upload</i>
+            <div class="d-inline align-middle">Upload the maze</div>
+        </button>
+        <button id="load" class="btn btn-primary font-weight-light" data-toggle="modal" data-target="#mazesModal" disabled>
+            <i class="material-icons align-middle mr-1 d-none">cloud_download</i>
+            <span class="load-spinner spinner-border spinner-border-sm mr-1" role="status" aria-hidden="true"></span>
+            <div class="d-inline align-middle">Load a maze</div>
+        </button>
+    </div>
+    <div id="drawing" class="container flex-grow-1"></div>
+    <div class="modal fade" id="nameModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title font-weight-light" id="exampleModalLabel">Name this maze</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <label for="maze-name" class="col-form-label font-weight-light">Name:</label>
+                            <input type="text" class="form-control" id="maze-name" required>
+                            <div class="invalid-feedback" id="tooltipName"></div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary font-weight-light" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary font-weight-light" id="save" data-dismiss="modal">
+                        <i class="material-icons align-middle mr-1">save</i>
+                        <div class="d-inline align-middle">Upload</div>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="mazesModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title font-weight-light" id="exampleModalLabel">Choose a maze to load</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="btn-group-vertical btn-block" role="group" aria-label="Basic example">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary font-weight-light" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="./bundles/main.js"></script>
+
+</body>
+
+</html>
