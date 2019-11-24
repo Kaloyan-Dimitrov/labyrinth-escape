@@ -376,12 +376,17 @@ $(() => {
     }
     console.log({
       name,
-      maze
+      maze,
+      gridRows,
+      gridColumns
     })
     mazes.push({
       name,
-      maze
+      maze,
+      gridRows,
+      gridColumns
     })
+    listMazesInModal();
     firebase.firestore(app).collection(uid).add({
       name,
       maze,
